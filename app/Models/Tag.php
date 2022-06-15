@@ -9,5 +9,5 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tag_name', 'task_id'];
+    protected $fillable = ['tag_name'];
 }

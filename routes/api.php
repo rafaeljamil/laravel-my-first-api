@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,10 +18,14 @@ Route::middleware('auth:api')->prefix('v1')->group(function() {
     Route::get('/user', function(Request $request){
         return $request->user();
     });
-    Route::get('/teste', function(){
-        return 'Teste';
-    });
+
+    Route::apiResource('/tasks', TasksController::class);
+
+    // Route::get('/tasks/{task}', [TasksController::class, 'show']);
+    // Route::get('/tasks', [TasksController::class, 'index']);
 });
+
+
 
 // Rota padrão antiga
 // Route::middleware('auth:api')->get('/user', function (Request $request) {

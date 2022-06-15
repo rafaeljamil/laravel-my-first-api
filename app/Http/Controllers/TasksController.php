@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Resources\TasksResource;
+use Database\Factories\TaskFactory;
 
 class TasksController extends Controller
 {
@@ -15,7 +17,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-        //
+        return TasksResource::collection(Task::all());
     }
 
     /**
@@ -36,7 +38,15 @@ class TasksController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        //
+        $faker = \Faker\Factory::create(1);
+        $task = Task::create([
+            'name' => $faker->name,
+            'description' => $faker->sentence,
+            'file_url' => $faker->url,
+        ]);
+        
+        return new TasksResource($task);
+        //return 'POST route';
     }
 
     /**
@@ -47,7 +57,7 @@ class TasksController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        return new TasksResource($task);
     }
 
     /**
@@ -70,7 +80,22 @@ class TasksController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        //return 'PUT|PATCH route';
+        $status = ['backlog', 'in_progress', 'waiting_customer_approval', 'approved'];
+        $req_index = array_search($request->input('status'), $status);
+        $task_index = array_search($task->status, $status);
+        if ($req_index == ($task_index + 1)){
+            //return 'Era pra dar certo';
+            $task->update([
+                'status' => $request->input('status'),
+            ]);
+            return new TasksResource($task);
+        }else{
+            return 'Update could not be done.';
+        };
+        
+        //return new TasksResource($task);
+        //return $task->status;
     }
 
     /**
@@ -81,6 +106,7 @@ class TasksController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return response(null, 204);
     }
 }

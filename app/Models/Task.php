@@ -9,5 +9,9 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'status', 'file_url'];
+    //protected $table = 'tasks';
+
+    //protected $casts = [ 'status' => 'backlog'];
+
+    protected $fillable = ['name', 'status', 'description', 'file_url'];
 }
