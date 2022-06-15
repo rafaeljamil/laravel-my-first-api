@@ -38,11 +38,11 @@ class TasksController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        $faker = \Faker\Factory::create(1);
+        //$faker = \Faker\Factory::create(1);
         $task = Task::create([
-            'name' => $faker->name,
-            'description' => $faker->sentence,
-            'file_url' => $faker->url,
+            'name' => $request->name,
+            'description' => $request->sentence,
+            'file_url' => $request->url,
         ]);
         
         return new TasksResource($task);
@@ -80,6 +80,37 @@ class TasksController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
+
+        $my_task = Task::find($task->id);
+        $my_task->update($request->all());
+        return $my_task;
+        //return 'PUT|PATCH route';
+        // $status = ['backlog', 'in_progress', 'waiting_customer_approval', 'approved'];
+        // $req_index = array_search($request->input('status'), $status);
+        // $task_index = array_search($task->status, $status);
+        // if ($req_index == ($task_index + 1)){
+        //     //return 'Era pra dar certo';
+        //     $task->update([
+        //         'status' => $request->input('status'),
+        //     ]);
+        //     return new TasksResource($task);
+        // }else{
+        //     return 'Update could not be done.';
+        // };
+        
+        //return new TasksResource($task);
+        //return $task->status;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateTaskRequest  $request
+     * @param  \App\Models\Task  $task
+     * @return \Illuminate\Http\Response
+     */
+    public function patch(UpdateTaskRequest $request, Task $task)
+    {
         //return 'PUT|PATCH route';
         $status = ['backlog', 'in_progress', 'waiting_customer_approval', 'approved'];
         $req_index = array_search($request->input('status'), $status);
@@ -99,6 +130,33 @@ class TasksController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Task  $task
+     * @return \Illuminate\Http\Response
+     */
+    public function file(Task $task)
+    {
+        $res = Response()->json([
+            'data' => [
+                'file_url' => $task->file_url
+            ]
+        ]);
+
+        $msg = Response()->json([
+            'data' => [
+                'message' => 'Status is not approved.'
+            ]
+        ]);
+
+        if($task->status === 'approved'){
+            return $res;
+        }else{
+            return $msg;
+        };
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Task  $task
@@ -106,7 +164,11 @@ class TasksController extends Controller
      */
     public function destroy(Task $task)
     {
-        $task->delete();
-        return response(null, 204);
+        $res = Response()->json([
+            'data' => [
+                'message' => 'No delete route was needed.'
+            ]
+        ]);
+        return $res;
     }
 }

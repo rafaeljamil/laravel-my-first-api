@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\TasksController;
+use App\Http\Controllers\TagsController;
+use App\Http\Resources\TasksResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,9 @@ Route::middleware('auth:api')->prefix('v1')->group(function() {
     });
 
     Route::apiResource('/tasks', TasksController::class);
+    Route::get('/tasks/{task}/file_url', [TasksController::class, 'file']);
+    Route::patch('/tasks/{task}/status', [TasksController::class, 'patch']);
+    Route::post('/tasks/{task}/tag', [TagsController::class, 'store']);
 
     // Route::get('/tasks/{task}', [TasksController::class, 'show']);
     // Route::get('/tasks', [TasksController::class, 'index']);

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use App\Models\Task;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
+use App\Http\Resources\TagsResource;
 
 class TagsController extends Controller
 {
@@ -31,12 +33,19 @@ class TagsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param  \App\Models\Task  $task
      * @param  \App\Http\Requests\StoreTagRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTagRequest $request)
+    public function store(StoreTagRequest $request, Task $task)
     {
-        //
+        $tag = Tag::create([
+            'tag_name' => $request->input('tag_name'),
+            'task_id' => $task->id
+        ]);
+
+        return new TagsResource($tag);
+        //return $task->id;
     }
 
     /**
